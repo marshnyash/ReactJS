@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
-import './styles/main.scss';
-import './styles/css.css';
+
 import './babel';
+import './styles/main.scss';
 
 const App = () => (
   <div>
