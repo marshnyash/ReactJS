@@ -3,7 +3,7 @@
     "ecmaVersion": 6,
     "sourceType": "module",
     "ecmaFeatures": {
-        "jsx": true
+        "tsx": true
     }
   },
   "rules": {
@@ -15,15 +15,15 @@
     },
     "no-unused-vars": "warn",
     "indent": [
-        "error",
+        "warn",
         2
     ],
     "quotes": [
-        "error",
+        "warn",
         "single"
     ],
     "semi": [
-        "error",
+        "warn",
         "always"
     ],
     "no-console": [
