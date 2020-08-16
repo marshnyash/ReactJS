@@ -1,14 +1,29 @@
 import React from 'react';
-import { render } from 'react-dom';
+import ReactDOM from 'react-dom';
+import styled from 'styled-components';
 
-import './babel';
 import './styles/main.scss';
 
-const App = () => (
-  <div>
-    <div className="main">Hello</div>
-    <div className="container">Hello World</div>
-  </div>
-);
+import Footer from './components/footer/footer';
+import Header from './components/header/header';
+import Movies from './components/movies/movies';
+import ErrorBoundary from './shared/error-boundary/error-boundary';
 
-render(<App />, document.getElementById('app'));
+const Wrapper = styled.div`
+  max-width: 1024px;
+  margin: 0 auto;
+`;
+
+const rootElement = document.getElementById("app");
+ReactDOM.render(
+  <Wrapper>
+    <ErrorBoundary>
+      <Header />
+    </ErrorBoundary>
+    <ErrorBoundary>
+      <Movies />
+    </ErrorBoundary>
+    <Footer />
+  </Wrapper>,
+  rootElement
+);
