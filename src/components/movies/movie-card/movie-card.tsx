@@ -1,18 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Block, Description, Image, Title } from './movie-card-styles';
+import MenuList from '../menu/menu';
+import { Movie } from '../movies';
+import { MovieDescription } from './movie-description';
+import { MovieImage } from './movie-image';
+import { MovieImageSection } from './movie-image-section';
+import { MovieSection } from './movie-section';
+import { MovieTitle } from './movie-title';
 
-const MovieCard = ({ title, image, genre, date }) => (
-  <div>
-    <Image src={image} alt="movie" />
-    <Block>
-      <div>
-        <Title>{title}</Title>
-        <Description>{genre}</Description>
-      </div>
-      <Description>{date}</Description>
-    </Block>
-  </div>
-);
+interface Props extends Movie {
+  menuOptions: string[];
+  onMenuClick?: (e: any) => void;
+}
+
+const MovieCard = ({
+  menuOptions,
+  onMenuClick,
+  image,
+  title,
+  genre,
+  date,
+  id,
+}: Props) => {
+  return (
+    <div>
+      <MovieImageSection>
+        <MovieImage src={image} alt="movie" />
+        <MenuList
+          menuOptions={menuOptions}
+          onMenuClick={onMenuClick}
+        ></MenuList>
+      </MovieImageSection>
+      <MovieSection>
+        <div>
+          <MovieTitle>{title}</MovieTitle>
+          <MovieDescription>{genre}</MovieDescription>
+        </div>
+        <MovieDescription>{date}</MovieDescription>
+      </MovieSection>
+    </div>
+  );
+};
 
 export default MovieCard;

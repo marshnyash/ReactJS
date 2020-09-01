@@ -1,26 +1,41 @@
 import React from 'react';
+import styled from 'styled-components';
 
-import { Item, LeftFilter, RightSort, TextSort, Wrapper } from './filter-styles';
+import { FilterItem } from './filter-item';
+import { FilterSection } from './filter-section';
+import { SortTitle } from './sort-title';
 
-const filter = ["all", "documentary", "comedy", "horror", "crime"];
-const sort = ['Date', 'Genre', 'Title'];
+interface Props {
+  filter: string[];
+  sort: string[];
+  className: string;
+}
 
-const Filter = () => (
-  <Wrapper>
-    <LeftFilter>
-      {filter.map((e) => (
-        <Item>{e}</Item>
+const FilterComponent = ({ filter, sort, className }: Props) => (
+  <div className={className}>
+    <FilterSection>
+      {filter.map((e: string) => (
+        <FilterItem key={e}>{e}</FilterItem>
       ))}
-    </LeftFilter>
-    <RightSort>
-        <TextSort>Sort By</TextSort>
-        <select>
-          {sort.map((value) => (
-            <option>{value}</option>
-          ))}
-        </select>
-    </RightSort>
-  </Wrapper>
+    </FilterSection>
+    <FilterSection>
+      <SortTitle>Sort By</SortTitle>
+      <select>
+        {sort.map((value: string) => (
+          <option key={value}>{value}</option>
+        ))}
+      </select>
+    </FilterSection>
+  </div>
 );
+
+const Filter = styled(FilterComponent)`
+  display: flex;
+  justify-content: space-between;
+  color: #ffffff;
+  margin: 15px 0;
+  padding: 15px 0;
+  border-bottom: 1px solid #555555;
+`;
 
 export default Filter;

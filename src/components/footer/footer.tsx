@@ -1,21 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Title = styled.h1`
-  font-size: 18px;
-  text-align: center;
-  color: #f65261;
-`;
+import Logo from '../logo/logo';
+import { FooterTitle } from './footer-title';
 
-const Wrapper = styled.section`
+interface Props {
+  className?: string;
+}
+
+const FooterComponent = ({ className }: Props) => (
+  <div className={className}>
+    <FooterTitle>
+      <Logo />
+    </FooterTitle>
+  </div>
+);
+
+const Footer = styled(FooterComponent)`
   padding: 20px;
   background: #424242;
 `;
-
-const Footer = () => (
-  <Wrapper>
-    <Title>netflix</Title>
-  </Wrapper>
-);
 
 export default Footer;

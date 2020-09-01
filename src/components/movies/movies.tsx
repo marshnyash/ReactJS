@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { MoviesWrapper } from './movies-wrapper';
+
+import Modal from '../modal/modal';
+import ModalAddEditContent, { AddEditFormData } from '../modal/modal-add-edit-content';
+import ModalDeleteContent from '../modal/modal-delete-content';
 import Filter from './filter/filter';
 import MovieCard from './movie-card/movie-card';
+import { MoviesResults } from './movies-results';
+import { MoviesResultsNumber } from './movies-results-number';
 
-interface Movie {
+export interface Movie {
   title: string;
   image: string;
   genre: string;
@@ -71,52 +78,93 @@ const movies: Movie[] = [
   },
 ];
 
-const Wrapper = styled.section`
+const form: AddEditFormData = {
+  gendre: "horror",
+  title: "Title 1",
+  overview: "Overview 1",
+  movieUrl: "movie url 1",
+  runTime: "runtime 1",
+  releaseDate: "02-09-2020",
+};
+
+interface Props {
+  className: string;
+}
+
+const filter = ["all", "documentary", "comedy", "horror", "crime"];
+const sort = ["Date", "Genre", "Title"];
+const menuOptions = ["Edit", "Delete"];
+
+const MoviesContainerComponent = ({ className }: Props) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [formData, setFormData] = useState(form);
+  const [isDeleteMovie, setDeleteMovie] = useState(false);
+
+  const modalHandler = (e?: Event) => {
+    e?.preventDefault();
+    setIsModalVisible(!isModalVisible);
+  };
+
+  const modalDeleteHandler = (val: boolean) => {
+    setDeleteMovie(val);
+  };
+
+  const handleFormData = (data: AddEditFormData) => {
+    setFormData(data);
+  };
+
+  const handleMenu = (data: { option: string }) => {
+    data?.option === "Edit"
+      ? modalDeleteHandler(false)
+      : modalDeleteHandler(true);
+    modalHandler();
+  };
+  return (
+    <>
+      <section className={className}>
+        <Filter filter={filter} sort={sort} />
+        <MoviesResults>
+          <MoviesResultsNumber>{movies?.length} </MoviesResultsNumber>
+          movies found
+        </MoviesResults>
+        <MoviesWrapper>
+          {movies.map((movie) => (
+            <MovieCard
+              title={movie.title}
+              key={movie.id}
+              image={movie?.image}
+              genre={movie?.genre}
+              date={movie?.date}
+              id={movie?.id}
+              menuOptions={menuOptions}
+              onMenuClick={(data) => handleMenu(data)}
+            />
+          ))}
+        </MoviesWrapper>
+      </section>
+
+      <Modal
+        showModal={isModalVisible}
+        closeModal={modalHandler}
+        title={isDeleteMovie ? "DELETE MOVIE" : "EDIT MOVIE"}
+      >
+        {isDeleteMovie ? (
+          <ModalDeleteContent closeModal={modalHandler} />
+        ) : (
+          <ModalAddEditContent
+            closeModal={modalHandler}
+            onModalClick={(data) => handleFormData(data)}
+            formData={formData}
+            editableMode={true}
+          />
+        )}
+      </Modal>
+    </>
+  );
+};
+
+const MoviesContainer = styled(MoviesContainerComponent)`
   padding: 10px 40px 40px;
   background: #232323;
 `;
-
-const Container = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 20px;
-`;
-
-const Results = styled.div`
-  color: #ffffff;
-  font-size: 18px;
-  margin-bottom: 20px;
-`;
-const ResultsNumber = styled.span`
-  font-size: 22px;
-  font-weight: bold;
-`;
-
-// const FilterBlock = styled.div``;
-// const FilterItem = styled.div``;
-// const Results = styled.div``;
-// const Results = styled.div``;
-// const Results = styled.div``;
-
-const Movies = () => (
-  <Wrapper>
-    <Filter />
-    <Results>
-      <ResultsNumber>{movies?.length} </ResultsNumber>
-      movies found
-    </Results>
-    <Container>
-      {movies.map((movie) => (
-        <MovieCard
-          title={movie.title}
-          key={movie.id}
-          image={movie?.image}
-          genre={movie?.genre}
-          date={movie?.date}
-        />
-      ))}
-    </Container>
-  </Wrapper>
-);
-
-export default Movies;
+export default MoviesContainer;
