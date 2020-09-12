@@ -1,14 +1,6 @@
 import React from 'react';
-import { render } from 'react-dom';
+import ReactDOM from 'react-dom';
 
-import './babel';
-import './styles/main.scss';
+import App from './App';
 
-const App = () => (
-  <div>
-    <div className="main">Hello</div>
-    <div className="container">Hello World</div>
-  </div>
-);
-
-render(<App />, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById("root"));

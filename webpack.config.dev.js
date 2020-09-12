@@ -9,7 +9,8 @@ module.exports = merge(commonConfig, {
     port: 9000,
     hot: true,
     compress: true,
-    open: true
+    open: true,
+    historyApiFallback: true
   },
   output: {
     filename: `[name].js`,

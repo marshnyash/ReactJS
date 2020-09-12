@@ -8,7 +8,8 @@ module.exports = {
     main: path.resolve(__dirname, './src/index.tsx'),
   },
   output: {
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
