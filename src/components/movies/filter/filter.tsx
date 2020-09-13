@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { FilterItem } from './filter-item';
@@ -6,16 +6,19 @@ import { FilterSection } from './filter-section';
 import { SortTitle } from './sort-title';
 
 interface Props {
-  filter: string[];
+  filters: string[];
   sort: string[];
   className: string;
+  onFilterChange: (e: any) => void;
 }
 
-const FilterComponent = ({ filter, sort, className }: Props) => (
+const FilterComponent = ({ filters, sort, className, onFilterChange }: Props) => (
   <div className={className}>
     <FilterSection>
-      {filter.map((e: string) => (
-        <FilterItem key={e}>{e}</FilterItem>
+      {filters?.map((filter: string) => (
+        <FilterItem key={filter} onClick={() => onFilterChange({ filter })}>
+          {filter}
+        </FilterItem>
       ))}
     </FilterSection>
     <FilterSection>
@@ -34,7 +37,6 @@ const Filter = styled(FilterComponent)`
   justify-content: space-between;
   color: #ffffff;
   margin: 15px 0;
-  padding: 15px 0;
   border-bottom: 1px solid #555555;
 `;
 
