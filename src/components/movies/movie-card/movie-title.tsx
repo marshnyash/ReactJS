@@ -1,6 +1,10 @@
+import React from 'react';
 import styled from 'styled-components';
 
-export const MovieTitle = styled.p`
+const MovieTitleComponent = ({ className, title }) => (
+  <p className={className}>{title}</p>
+);
+export const MovieTitle = styled(MovieTitleComponent)`
   font-size: 16px;
   font-weight: bold;
   color: #ffffff;
