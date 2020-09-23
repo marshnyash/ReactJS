@@ -5,10 +5,11 @@ import { useStyles } from './modal-confirm-btn';
 import { ModalDeleteDescription } from './modal-delete-description';
 
 interface Props {
-  closeModal: (e: any) => void;
+  onDeleteMovieHandler: (e: any) => void;
+  id?: string;
 }
 
-const ModalDeleteContent = ({ closeModal }: Props) => {
+const ModalDeleteContent = ({ onDeleteMovieHandler, id }: Props) => {
   const classes = useStyles();
   return (
     <>
@@ -16,7 +17,7 @@ const ModalDeleteContent = ({ closeModal }: Props) => {
         Are you sure you want to delete this movie?
       </ModalDeleteDescription>
       <Button
-        onClick={closeModal}
+        onClick={onDeleteMovieHandler}
         className={classes.btn}
         variant="contained"
         color="secondary"

@@ -14,6 +14,10 @@ interface Props extends Movie {
   onMenuClick?: (e: any) => void;
   onMovieCardClick?: (e: any) => void;
   className: string;
+  image: string;
+  title: string;
+  genres: string[];
+  release_date: string;
 }
 
 const MovieCardComponent = ({
@@ -23,27 +27,27 @@ const MovieCardComponent = ({
   onMovieCardClick,
   image,
   title,
-  genre,
-  releaseDate,
+  genres,
+  release_date,
   id,
 }: Props) => {
   return (
-    <section className={className} onClick={() => {
-      onMovieCardClick({ id });
-    }}>
-      <MovieImageSection >
+    <section
+      className={className}
+      onClick={() => {
+        onMovieCardClick({ id });
+      }}
+    >
+      <MovieImageSection>
         <MovieImage src={image} alt="movie" />
-        <MenuList
-          menuOptions={menuOptions}
-          onMenuClick={onMenuClick}
-        ></MenuList>
+        <MenuList menuOptions={menuOptions} onMenuClick={onMenuClick} id={id} />
       </MovieImageSection>
       <MovieSection>
         <div>
-          <MovieTitle>{title}</MovieTitle>
-          <MovieDescription>{genre}</MovieDescription>
+          <MovieTitle title={title} />
+          <MovieDescription genres={genres?.join(", ")} />
         </div>
-        <MovieDescription >{releaseDate}</MovieDescription>
+        <MovieDescription release_date={release_date} />
       </MovieSection>
     </section>
   );

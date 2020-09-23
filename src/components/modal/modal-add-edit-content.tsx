@@ -1,50 +1,51 @@
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import { Button, Checkbox, FormControl, Input, InputLabel, ListItemText, MenuItem, Select, TextField } from '@material-ui/core';
 import React, { useState } from 'react';
 
+import { Movie } from '../movies/movies';
 import { useStyles } from './modal-styles';
-
-export interface AddEditFormData {
-  genre: string;
-  title: string;
-  overview: string;
-  movieUrl: string;
-  runTime: string;
-  releaseDate: string;
-}
 
 interface Props {
   closeModal?: (e: any) => void;
-  onModalClick: (data: any) => void;
-  formData?: AddEditFormData;
+  onModalSubmit: (e: any) => void;
+  formData?: Movie;
   editableMode?: boolean;
+  genresOptions: string[];
 }
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const ModalAddEditContent = ({
   closeModal,
-  onModalClick,
+  onModalSubmit,
   formData,
   editableMode,
+  genresOptions,
 }: Props) => {
   const classes = useStyles();
-  const [genre, setGandre] = useState(
-    editableMode ? formData?.genre : ``
-  );
+  const [genres, setGenres] = useState(editableMode ? formData?.genres : []);
   const [title, setTitle] = useState(editableMode ? formData?.title : ``);
   const [overview, setOverview] = useState(
     editableMode ? formData?.overview : ``
   );
-  const [movieUrl, setMovieUrl] = useState(
-    editableMode ? formData?.movieUrl : ``
+  const [posterPath, setMovieUrl] = useState(
+    editableMode ? formData?.poster_path : ``
   );
-  const [runTime, setRunTime] = useState(
-    editableMode ? formData?.runTime : ``
-  );
+  const [runtime, setRuntime] = useState(editableMode ? formData?.runtime : ``);
   const [releaseDate, setReleasedate] = useState(
-    editableMode ? formData?.releaseDate : ``
+    editableMode ? formData?.release_date : ``
   );
 
-  const handleChangeGenre = (event) => {
-    setGandre(event.target.value);
+  const handleChangeGenres = (event) => {
+    setGenres(event.target.value as string[]);
   };
 
   const handleChangeTitle = (event) => {
@@ -59,8 +60,8 @@ const ModalAddEditContent = ({
     setMovieUrl(event.target.value);
   };
 
-  const handleChangeRunTime = (event) => {
-    setRunTime(event.target.value);
+  const handleChangeRuntime = (event) => {
+    setRuntime(+event.target.value);
   };
 
   const handleChangeReleaseDate = (event) => {
@@ -107,7 +108,7 @@ const ModalAddEditContent = ({
         />
         <TextField
           label="Movie URL"
-          name="movieUrl"
+          name="posterPath"
           variant="filled"
           color="secondary"
           className={classes.formControl}
@@ -118,7 +119,7 @@ const ModalAddEditContent = ({
               focused: classes.focusedLabel,
             },
           }}
-          value={movieUrl}
+          value={posterPath}
           onChange={handleChangeMovieUrl}
         />
         <FormControl
@@ -126,17 +127,25 @@ const ModalAddEditContent = ({
           color="secondary"
           className={classes.formControl}
         >
-          <InputLabel className={classes.label}>Genre</InputLabel>
+          <InputLabel className={classes.label}>Genres</InputLabel>
           <Select
-            value={genre}
-            onChange={handleChangeGenre}
+            multiple
+            value={genres}
+            onChange={handleChangeGenres}
             className={classes.title}
+            input={<Input style={{ marginLeft: "15px" }} />}
+            renderValue={(selected) => (selected as string[]).join(", ")}
+            MenuProps={MenuProps}
           >
-            <MenuItem value={"cartoon"}>Cartoon</MenuItem>
-            <MenuItem value={"horror"}>Horror</MenuItem>
-            <MenuItem value={"documentary"}>Documentary</MenuItem>
+            {genresOptions.map((name) => (
+              <MenuItem key={name} value={name}>
+                <Checkbox checked={genres.indexOf(name) > -1} />
+                <ListItemText primary={name} />
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
+
         <TextField
           label="Overview"
           name="overview"
@@ -166,8 +175,8 @@ const ModalAddEditContent = ({
               focused: classes.focusedLabel,
             },
           }}
-          value={runTime}
-          onChange={handleChangeRunTime}
+          value={runtime}
+          onChange={handleChangeRuntime}
         />
       </>
       <div className={classes.btns}>
@@ -182,13 +191,14 @@ const ModalAddEditContent = ({
           variant="contained"
           color="secondary"
           onClick={(_) => {
-            onModalClick({
-              genre,
+            onModalSubmit({
+              ...formData,
+              genres,
               title,
               overview,
-              releaseDate,
-              movieUrl,
-              runTime,
+              poster_path: posterPath,
+              runtime,
+              release_date: releaseDate,
             });
           }}
         >
