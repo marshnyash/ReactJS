@@ -1,6 +1,9 @@
+import React from 'react';
 import styled from 'styled-components';
 
-export const MovieDetailsRating = styled.div`
+const MovieDetailsRatingComponent = ({ className, vote_average }) => <div className={className}>{vote_average}</div>;
+
+export const MovieDetailsRating = styled(MovieDetailsRatingComponent)`
   border: 1px solid white;
   display: flex;
   border-radius: 50%;

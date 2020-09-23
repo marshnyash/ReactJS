@@ -12,75 +12,19 @@ import { MoviesResults } from './movies-results';
 import { MoviesResultsNumber } from './movies-results-number';
 
 export interface Movie {
-  title: string;
-  image: string;
-  genre: string;
-  releaseDate: number;
+  budget: number;
+  genres: string[];
   id: string;
-  description?: string;
-  duration?: number;
-  rating?: number;
-  cover?: string;
+  overview: string;
+  poster_path: string;
+  release_date: string;
+  revenue: number;
+  runtime: number;
+  tagline: string;
+  title: string;
+  vote_average: number;
+  vote_count: number;
 }
-
-const movies: Movie[] = [
-  {
-    title: "How to train your dragon",
-    image: "src/assets/images/how-to-train-your-dragon.jpg",
-    genre: "cartoon",
-    releaseDate: 2019,
-    id: "rick001",
-  },
-  {
-    title: "Harry Potter",
-    image: "src/assets/images/HP.jpg",
-    genre: "horror",
-    releaseDate: 2019,
-    id: "rick002",
-  },
-  {
-    title: "Khumba",
-    image: "src/assets/images/khumba.jpg",
-    genre: "cartoon",
-    releaseDate: 2019,
-    id: "rick003",
-  },
-  {
-    title: "Movie",
-    image: "src/assets/images/movie-1.jpg",
-    genre: "cartoon",
-    releaseDate: 2019,
-    id: "rick004",
-  },
-  {
-    title: "How to train your dragon",
-    image: "src/assets/images/how-to-train-your-dragon.jpg",
-    genre: "cartoon",
-    releaseDate: 2019,
-    id: "rick005",
-  },
-  {
-    title: "Harry Potter",
-    image: "src/assets/images/HP.jpg",
-    genre: "horror",
-    releaseDate: 2019,
-    id: "rick006",
-  },
-  {
-    title: "Khumba",
-    image: "src/assets/images/khumba.jpg",
-    genre: "cartoon",
-    releaseDate: 2019,
-    id: "rick007",
-  },
-  {
-    title: "Movie",
-    image: "src/assets/images/movie-1.jpg",
-    genre: "cartoon",
-    releaseDate: 2019,
-    id: "rick008",
-  },
-];
 
 const form: AddEditFormData = {
   genre: "horror",
@@ -96,7 +40,7 @@ interface Props {
   onMovieCardClick?: (e: any) => void;
 }
 
-const filters = ["all", "documentary", "comedy", "horror", "cartoon"];
+const filters = ["All", "Documentary", "Comedy", "Horror", "Crime"];
 const sort = ["Date", "Genre", "Title"];
 const menuOptions = ["Edit", "Delete"];
 
@@ -108,8 +52,18 @@ const MoviesContainerComponent = ({ className, onMovieCardClick }: Props) => {
   const [moviesList, setMoviesList] = useState([]);
 
   useEffect(() => {
-    setMoviesList(movies);
-  }, [setMoviesList]);
+    fetch("http://localhost:4000/movies")
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          console.log("result", result);
+          setMoviesList(result.data);
+        },
+        (error) => {
+          console.log("error", error);
+        }
+      );
+  }, []);
 
   const modalHandler = (e?: Event) => {
     e?.preventDefault();
@@ -125,44 +79,65 @@ const MoviesContainerComponent = ({ className, onMovieCardClick }: Props) => {
   };
 
   const handleMenu = ({ option }: any) => {
-    option === "Edit"
-      ? modalDeleteHandler(false)
-      : modalDeleteHandler(true);
+    option === "Edit" ? modalDeleteHandler(false) : modalDeleteHandler(true);
     modalHandler();
   };
 
   const filterMovies = useCallback((value) => {
-    setFilteredValue(value);
-    filterMoviesList(value?.filter);
-  }, [setFilteredValue]);
+    setFilteredValue(value?.filter);
+  }, []);
 
-  const filterMoviesList = (value: string) => {
-    const filteredResults = value !== 'all' ? movies.filter(e => e.genre === value) : movies;
-    setMoviesList(filteredResults);
-  }
-  
+  const renderMoviesList = (movies: any[]) =>
+    movies.map(({ title, id, poster_path, genre, release_date }) => {
+      return (
+        <MovieCard
+          title={title}
+          key={id}
+          image={poster_path}
+          genre={genre}
+          releaseDate={release_date}
+          id={id}
+          menuOptions={menuOptions}
+          onMenuClick={(data) => handleMenu(data)}
+          onMovieCardClick={onMovieCardClick}
+        />
+      );
+    });
+
+  const updateMovies = () => {
+    const filteredMovie = [];
+    moviesList?.filter((e) => {
+      e?.genres.filter((el) => {
+        if (el?.toLowerCase() === filteredValue?.toLowerCase()) {
+          filteredMovie.push(e);
+        }
+      });
+    });
+    return filteredMovie;
+  };
+
   return (
     <>
       <section className={className}>
-        <Filter filters={filters} sort={sort} onFilterChange={filterMovies}/>
+        <Filter filters={filters} sort={sort} onFilterChange={filterMovies} />
         <MoviesResults>
-          <MoviesResultsNumber>{moviesList?.length} </MoviesResultsNumber>
+          <MoviesResultsNumber>
+            {
+              renderMoviesList(
+                filteredValue === "All" || !filteredValue
+                  ? moviesList
+                  : updateMovies()
+              )?.length
+            }{" "}
+          </MoviesResultsNumber>
           movies found
         </MoviesResults>
         <MoviesWrapper>
-          {moviesList?.map((movie) => (
-            <MovieCard
-              title={movie.title}
-              key={movie.id}
-              image={movie?.image}
-              genre={movie?.genre}
-              releaseDate={movie?.releaseDate}
-              id={movie?.id}
-              menuOptions={menuOptions}
-              onMenuClick={(data) => handleMenu(data)}
-              onMovieCardClick={onMovieCardClick}
-            />
-          ))}
+          {renderMoviesList(
+            filteredValue === "All" || !filteredValue
+              ? moviesList
+              : updateMovies()
+          )}
         </MoviesWrapper>
       </section>
 
