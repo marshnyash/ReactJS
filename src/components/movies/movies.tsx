@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { MoviesWrapper } from './movies-wrapper';
@@ -15,8 +15,12 @@ export interface Movie {
   title: string;
   image: string;
   genre: string;
-  date: number;
+  releaseDate: number;
   id: string;
+  description?: string;
+  duration?: number;
+  rating?: number;
+  cover?: string;
 }
 
 const movies: Movie[] = [
@@ -24,62 +28,62 @@ const movies: Movie[] = [
     title: "How to train your dragon",
     image: "src/assets/images/how-to-train-your-dragon.jpg",
     genre: "cartoon",
-    date: 2019,
+    releaseDate: 2019,
     id: "rick001",
   },
   {
     title: "Harry Potter",
     image: "src/assets/images/HP.jpg",
-    genre: "cartoon",
-    date: 2019,
+    genre: "horror",
+    releaseDate: 2019,
     id: "rick002",
   },
   {
     title: "Khumba",
     image: "src/assets/images/khumba.jpg",
     genre: "cartoon",
-    date: 2019,
+    releaseDate: 2019,
     id: "rick003",
   },
   {
     title: "Movie",
     image: "src/assets/images/movie-1.jpg",
     genre: "cartoon",
-    date: 2019,
+    releaseDate: 2019,
     id: "rick004",
   },
   {
     title: "How to train your dragon",
     image: "src/assets/images/how-to-train-your-dragon.jpg",
     genre: "cartoon",
-    date: 2019,
+    releaseDate: 2019,
     id: "rick005",
   },
   {
     title: "Harry Potter",
     image: "src/assets/images/HP.jpg",
-    genre: "cartoon",
-    date: 2019,
+    genre: "horror",
+    releaseDate: 2019,
     id: "rick006",
   },
   {
     title: "Khumba",
     image: "src/assets/images/khumba.jpg",
     genre: "cartoon",
-    date: 2019,
+    releaseDate: 2019,
     id: "rick007",
   },
   {
     title: "Movie",
     image: "src/assets/images/movie-1.jpg",
     genre: "cartoon",
-    date: 2019,
+    releaseDate: 2019,
     id: "rick008",
   },
 ];
 
 const form: AddEditFormData = {
-  gendre: "horror",
+  genre: "horror",
   title: "Title 1",
   overview: "Overview 1",
   movieUrl: "movie url 1",
@@ -89,16 +93,23 @@ const form: AddEditFormData = {
 
 interface Props {
   className: string;
+  onMovieCardClick?: (e: any) => void;
 }
 
-const filter = ["all", "documentary", "comedy", "horror", "crime"];
+const filters = ["all", "documentary", "comedy", "horror", "cartoon"];
 const sort = ["Date", "Genre", "Title"];
 const menuOptions = ["Edit", "Delete"];
 
-const MoviesContainerComponent = ({ className }: Props) => {
+const MoviesContainerComponent = ({ className, onMovieCardClick }: Props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [formData, setFormData] = useState(form);
   const [isDeleteMovie, setDeleteMovie] = useState(false);
+  const [filteredValue, setFilteredValue] = useState(null);
+  const [moviesList, setMoviesList] = useState([]);
+
+  useEffect(() => {
+    setMoviesList(movies);
+  }, [setMoviesList]);
 
   const modalHandler = (e?: Event) => {
     e?.preventDefault();
@@ -113,31 +124,43 @@ const MoviesContainerComponent = ({ className }: Props) => {
     setFormData(data);
   };
 
-  const handleMenu = (data: { option: string }) => {
-    data?.option === "Edit"
+  const handleMenu = ({ option }: any) => {
+    option === "Edit"
       ? modalDeleteHandler(false)
       : modalDeleteHandler(true);
     modalHandler();
   };
+
+  const filterMovies = useCallback((value) => {
+    setFilteredValue(value);
+    filterMoviesList(value?.filter);
+  }, [setFilteredValue]);
+
+  const filterMoviesList = (value: string) => {
+    const filteredResults = value !== 'all' ? movies.filter(e => e.genre === value) : movies;
+    setMoviesList(filteredResults);
+  }
+  
   return (
     <>
       <section className={className}>
-        <Filter filter={filter} sort={sort} />
+        <Filter filters={filters} sort={sort} onFilterChange={filterMovies}/>
         <MoviesResults>
-          <MoviesResultsNumber>{movies?.length} </MoviesResultsNumber>
+          <MoviesResultsNumber>{moviesList?.length} </MoviesResultsNumber>
           movies found
         </MoviesResults>
         <MoviesWrapper>
-          {movies.map((movie) => (
+          {moviesList?.map((movie) => (
             <MovieCard
               title={movie.title}
               key={movie.id}
               image={movie?.image}
               genre={movie?.genre}
-              date={movie?.date}
+              releaseDate={movie?.releaseDate}
               id={movie?.id}
               menuOptions={menuOptions}
               onMenuClick={(data) => handleMenu(data)}
+              onMovieCardClick={onMovieCardClick}
             />
           ))}
         </MoviesWrapper>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import Footer from './components/footer/footer';
@@ -12,18 +12,22 @@ const AppWrapper = styled.div`
   margin: 0 auto;
 `;
 
-const App = () => (
-  <>
-    <GlobalBodyStyle/>
+const App = () => {
+  const [movieId, setMovieId] = useState(null);
+
+  const handleMovieCardClick = (movieIdDetails: string) => setMovieId(movieIdDetails);
+  
+  return (
+    <>
+      <GlobalBodyStyle />
       <AppWrapper>
         <ErrorBoundary>
-          <Header />
-          <MoviesContainer />
+          <Header movieDetailsId={movieId}/>
+          <MoviesContainer onMovieCardClick={handleMovieCardClick}/>
         </ErrorBoundary>
         <Footer />
       </AppWrapper>
-  </>
-);
-
+    </>
+  );
+};
 export default App;
-

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useStyles } from './modal-styles';
 
 export interface AddEditFormData {
-  gendre: string;
+  genre: string;
   title: string;
   overview: string;
   movieUrl: string;
@@ -26,8 +26,8 @@ const ModalAddEditContent = ({
   editableMode,
 }: Props) => {
   const classes = useStyles();
-  const [gendre, setGandre] = useState(
-    editableMode ? formData?.gendre : ``
+  const [genre, setGandre] = useState(
+    editableMode ? formData?.genre : ``
   );
   const [title, setTitle] = useState(editableMode ? formData?.title : ``);
   const [overview, setOverview] = useState(
@@ -43,7 +43,7 @@ const ModalAddEditContent = ({
     editableMode ? formData?.releaseDate : ``
   );
 
-  const handleChangeGendre = (event) => {
+  const handleChangeGenre = (event) => {
     setGandre(event.target.value);
   };
 
@@ -126,10 +126,10 @@ const ModalAddEditContent = ({
           color="secondary"
           className={classes.formControl}
         >
-          <InputLabel className={classes.label}>Gendre</InputLabel>
+          <InputLabel className={classes.label}>Genre</InputLabel>
           <Select
-            value={gendre}
-            onChange={handleChangeGendre}
+            value={genre}
+            onChange={handleChangeGenre}
             className={classes.title}
           >
             <MenuItem value={"cartoon"}>Cartoon</MenuItem>
@@ -183,7 +183,7 @@ const ModalAddEditContent = ({
           color="secondary"
           onClick={(_) => {
             onModalClick({
-              gendre,
+              genre,
               title,
               overview,
               releaseDate,

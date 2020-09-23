@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 
 import MenuList from '../menu/menu';
 import { Movie } from '../movies';
@@ -11,20 +12,26 @@ import { MovieTitle } from './movie-title';
 interface Props extends Movie {
   menuOptions: string[];
   onMenuClick?: (e: any) => void;
+  onMovieCardClick?: (e: any) => void;
+  className: string;
 }
 
-const MovieCard = ({
+const MovieCardComponent = ({
+  className,
   menuOptions,
   onMenuClick,
+  onMovieCardClick,
   image,
   title,
   genre,
-  date,
+  releaseDate,
   id,
 }: Props) => {
   return (
-    <div>
-      <MovieImageSection>
+    <section className={className} onClick={() => {
+      onMovieCardClick({ id });
+    }}>
+      <MovieImageSection >
         <MovieImage src={image} alt="movie" />
         <MenuList
           menuOptions={menuOptions}
@@ -36,10 +43,14 @@ const MovieCard = ({
           <MovieTitle>{title}</MovieTitle>
           <MovieDescription>{genre}</MovieDescription>
         </div>
-        <MovieDescription>{date}</MovieDescription>
+        <MovieDescription >{releaseDate}</MovieDescription>
       </MovieSection>
-    </div>
+    </section>
   );
 };
+
+const MovieCard = styled(MovieCardComponent)`
+  cursor: pointer;
+`;
 
 export default MovieCard;

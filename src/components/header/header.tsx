@@ -1,50 +1,67 @@
-import React, { useState } from 'react';
+import SearchIcon from '@material-ui/icons/Search';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Logo from '../logo/logo';
 import Modal from '../modal/modal';
 import ModalAddEditContent, { AddEditFormData } from '../modal/modal-add-edit-content';
+import MovieDetails from '../movies/movie-details/movie-details';
 import { HeaderAddBtn } from './header-add-btn';
-import { HeaderSearchBlock } from './header-search-block';
-import { HeaderSearchBtn } from './header-search-btn';
-import { HeaderSearchInput } from './header-search-input';
-import { HeaderSearchLine } from './header-search-line';
-import { HeaderTitle } from './header-title';
+import HeaderSearchBlock from './header-search-block';
+import { useStyles } from './header-styles';
 import { HeaderTop } from './header-top';
 
 interface Props {
   className?: string;
+  movieDetailsId?: string;
 }
 
-const HeaderComponent = ({ className }: Props) => {
+const HeaderComponent = ({ className, movieDetailsId }: Props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isMovieDetailsVisible, setIsMovieDetailsVisible] = useState(false);
+
+  useEffect(
+    () =>
+      movieDetailsId
+        ? setIsMovieDetailsVisible(true)
+        : setIsMovieDetailsVisible(false),
+    [movieDetailsId]
+  );
 
   const modalHandler = (e: Event) => {
     e.preventDefault();
     setIsModalVisible(!isModalVisible);
   };
 
+  const handleSearchIconClick = () => {
+    setIsMovieDetailsVisible(false);
+  };
+
   const handleFormData = (data: AddEditFormData) => {
     console.log("data", data);
   };
+  const classes = useStyles();
 
   return (
     <header className={className}>
       <HeaderTop>
         <Logo />
-        <HeaderAddBtn onClick={modalHandler}>+ ADD MOVIE</HeaderAddBtn>
+        {isMovieDetailsVisible ? (
+          <SearchIcon
+            className={classes.searchIconBtn}
+            fontSize="large"
+            onClick={handleSearchIconClick}
+          />
+        ) : (
+          <HeaderAddBtn onClick={modalHandler}>+ ADD MOVIE</HeaderAddBtn>
+        )}
       </HeaderTop>
 
-      <HeaderSearchBlock>
-        <HeaderTitle>FIND YOUR MOVIE</HeaderTitle>
-        <HeaderSearchLine>
-          <HeaderSearchInput
-            type="text"
-            placeholder="What do you want to watch?"
-          />
-          <HeaderSearchBtn>SEARCH</HeaderSearchBtn>
-        </HeaderSearchLine>
-      </HeaderSearchBlock>
+      {isMovieDetailsVisible ? (
+        <MovieDetails id={movieDetailsId}></MovieDetails>
+      ) : (
+        <HeaderSearchBlock />
+      )}
 
       <Modal
         showModal={isModalVisible}
@@ -66,7 +83,7 @@ const Header = styled(HeaderComponent)`
   flex-direction: column;
   background: url("src/assets/images/header-bg-01.png");
   width: 100%;
-  height: 400px;
+  height: 450px;
   background-position: center;
   background-size: cover;
 `;
