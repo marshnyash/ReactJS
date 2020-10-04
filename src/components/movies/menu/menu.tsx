@@ -41,7 +41,10 @@ const MenuListComponent = ({
         aria-label="more"
         aria-controls="long-menu"
         aria-haspopup="true"
-        onClick={handleClick}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleClick(e);
+        }}
       >
         <MoreVertIcon className={classes.moreVertIcon} />
       </IconButton>
@@ -66,6 +69,7 @@ const MenuListComponent = ({
             key={option}
             className={classes.menuItem}
             onClick={(e) => {
+              e.stopPropagation();
               handleClose();
               onMenuClick({ option, id });
             }}
