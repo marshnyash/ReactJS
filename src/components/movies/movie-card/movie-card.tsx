@@ -34,18 +34,12 @@ const MovieCardComponent = ({
   return (
     <section
       className={className}
-      // onClick={() => {
-      //   onMovieCardClick({ id });
-      // }}
+      onClick={() => {
+        onMovieCardClick({ id });
+      }}
     >
       <MovieImageSection>
-        <MovieImage
-          src={image}
-          alt="movie"
-          onClick={() => {
-            onMovieCardClick({ id });
-          }}
-        />
+        <MovieImage src={image} alt="movie" />
         <MenuList menuOptions={menuOptions} onMenuClick={onMenuClick} id={id} />
       </MovieImageSection>
       <MovieSection>

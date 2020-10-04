@@ -3,32 +3,34 @@
     "ecmaVersion": 6,
     "sourceType": "module",
     "ecmaFeatures": {
-        "tsx": true
+      "tsx": true
     }
   },
   "rules": {
     "parser": "babel-eslint",
-    "extends": "eslint:recommended",
+    "extends": ["eslint:recommended", "prettier"],
     "env": {
       "browser": true,
       "es6": true
     },
     "no-unused-vars": "warn",
     "indent": [
-        "warn",
-        2
+      "warn",
+      2
     ],
     "quotes": [
-        "warn",
-        "single"
+      "warn",
+      "single"
     ],
     "semi": [
-        "warn",
-        "always"
+      "warn",
+      "always"
     ],
     "no-console": [
-        "error",
-        { "allow": ["error", "log"] }
+      "error",
+      {
+        "allow": ["error", "log"]
+      }
     ]
   }
 }

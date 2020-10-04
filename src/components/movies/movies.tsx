@@ -97,7 +97,6 @@ const MoviesContainerComponent = ({
   };
 
   const handleMenuClick = ({ option, id }: any) => {
-    // e.stopPropagation();
     option === MenuOptions.Edit
       ? setIsDeleteMovie(option === MenuOptions.Delete)
       : setIsDeleteMovie(option === MenuOptions.Delete);
