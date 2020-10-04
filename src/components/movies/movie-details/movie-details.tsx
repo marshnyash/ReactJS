@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 
+import { fetchMovieById } from '../../../redux/actions/movie';
 import { Movie } from '../movies';
 import { MovieDetailsCover } from './movie-details-cover';
 import { MovieDetailsDescription } from './movie-details-description';
@@ -13,54 +15,63 @@ import { MovieDetailsTitleBlock } from './movie-details-title-block';
 
 interface Props {
   className: string;
-  id?: string;
+  id?: { id: string };
+  currentMovie: Movie;
+  fetchMovieById: any;
 }
 
-const movie: Movie = {
-  title: "How to train your dragon",
-  image: "src/assets/images/how-to-train-your-dragon.jpg",
-  genre: "cartoon",
-  releaseDate: 2019,
-  id: "rick001",
-  description:
-    "How to Train Your Dragon is a 2010 American computer-animated action fantasy film produced by DreamWorks Animation and distributed by Paramount Pictures loosely based on the 2003 book of the same name by Cressida Cowell. The film was directed by Chris Sanders and Dean DeBlois from a screenplay by Will Davies, Sanders, and DeBlois, and stars the voices of Jay Baruchel, Gerard Butler, Craig Ferguson, America Ferrera, Jonah Hill, Christopher Mintz-Plasse, T.J. Miller, and Kristen Wiig.",
-  rating: 4.5,
-  cover: "Oscar winning Movie",
-  duration: 154,
-};
-
-const MovieDetailsComponent = ({ className, id }: Props) => {
+const MovieDetailsComponent = ({
+  className,
+  id,
+  currentMovie,
+  fetchMovieById,
+}: Props) => {
   useEffect(() => {
-    const movie$ = new Promise((resolve, reject) => {
-      resolve(movie);
-    });
-    movie$.then((response) => console.log("response", response));
+    fetchMovieById(id.id);
   }, [id]);
-
   return (
-    <section className={className}>
-      <MovieDetailsImage src={movie.image} alt="movie" />
-      <div>
-        <MovieDetailsTitleBlock>
-          <MovieDetailsTitle>{movie.title}</MovieDetailsTitle>
-          <MovieDetailsRating>{movie.rating}</MovieDetailsRating>
-        </MovieDetailsTitleBlock>
-        <MovieDetailsCover>{movie.cover}</MovieDetailsCover>
-        <MovieDetailsReleaseDate>{movie.releaseDate}</MovieDetailsReleaseDate>
-        <MovieDetailsDuration>{movie.duration} min</MovieDetailsDuration>
-        <MovieDetailsDescription>{movie.description}</MovieDetailsDescription>
-      </div>
-    </section>
+    currentMovie && (
+      <section className={className}>
+        <MovieDetailsImage src={currentMovie.poster_path} alt="movie" />
+        <div>
+          <MovieDetailsTitleBlock>
+            <MovieDetailsTitle title={currentMovie.title} />
+            <MovieDetailsRating
+              vote_average={currentMovie.vote_average}
+            ></MovieDetailsRating>
+          </MovieDetailsTitleBlock>
+          <MovieDetailsCover tagline={currentMovie.tagline}></MovieDetailsCover>
+          <MovieDetailsReleaseDate
+            release_date={currentMovie.release_date}
+          ></MovieDetailsReleaseDate>
+          <MovieDetailsDuration
+            runtime={currentMovie.runtime}
+          ></MovieDetailsDuration>
+          <MovieDetailsDescription
+            overview={currentMovie.overview}
+          ></MovieDetailsDescription>
+        </div>
+      </section>
+    )
   );
 };
+
+const mapStateToProps = (state) => ({
+  currentMovie: state.movies.currentMovie,
+  loading: state.movies.loading,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchMovieById: (id: string) => dispatch(fetchMovieById(id)),
+});
 
 const MovieDetails = styled(MovieDetailsComponent)`
   padding: 20px 40px;
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: auto 1fr;
   grid-gap: 40px;
   color: #ffffff;
   font-weight: 300;
 `;
 
-export default MovieDetails;
+export default connect(mapStateToProps, mapDispatchToProps)(MovieDetails);

@@ -1,11 +1,14 @@
 import SearchIcon from '@material-ui/icons/Search';
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 
+import { createMovie } from '../../redux/actions/movie';
 import Logo from '../logo/logo';
 import Modal from '../modal/modal';
-import ModalAddEditContent, { AddEditFormData } from '../modal/modal-add-edit-content';
+import ModalAddEditContent from '../modal/modal-add-edit-content';
 import MovieDetails from '../movies/movie-details/movie-details';
+import { Movie } from '../movies/movies';
 import { HeaderAddBtn } from './header-add-btn';
 import HeaderSearchBlock from './header-search-block';
 import { useStyles } from './header-styles';
@@ -14,9 +17,16 @@ import { HeaderTop } from './header-top';
 interface Props {
   className?: string;
   movieDetailsId?: string;
+  createMovie: (e: any) => void;
+  genresOptions: string[];
 }
 
-const HeaderComponent = ({ className, movieDetailsId }: Props) => {
+const HeaderComponent = ({
+  className,
+  movieDetailsId,
+  createMovie,
+  genresOptions,
+}: Props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isMovieDetailsVisible, setIsMovieDetailsVisible] = useState(false);
 
@@ -28,8 +38,7 @@ const HeaderComponent = ({ className, movieDetailsId }: Props) => {
     [movieDetailsId]
   );
 
-  const modalHandler = (e: Event) => {
-    e.preventDefault();
+  const handleModalVisibility = () => {
     setIsModalVisible(!isModalVisible);
   };
 
@@ -37,9 +46,6 @@ const HeaderComponent = ({ className, movieDetailsId }: Props) => {
     setIsMovieDetailsVisible(false);
   };
 
-  const handleFormData = (data: AddEditFormData) => {
-    console.log("data", data);
-  };
   const classes = useStyles();
 
   return (
@@ -53,7 +59,9 @@ const HeaderComponent = ({ className, movieDetailsId }: Props) => {
             onClick={handleSearchIconClick}
           />
         ) : (
-          <HeaderAddBtn onClick={modalHandler}>+ ADD MOVIE</HeaderAddBtn>
+          <HeaderAddBtn onClick={handleModalVisibility}>
+            + ADD MOVIE
+          </HeaderAddBtn>
         )}
       </HeaderTop>
 
@@ -65,18 +73,26 @@ const HeaderComponent = ({ className, movieDetailsId }: Props) => {
 
       <Modal
         showModal={isModalVisible}
-        closeModal={modalHandler}
+        closeModal={handleModalVisibility}
         title={"ADD MOVIE"}
       >
         <ModalAddEditContent
-          closeModal={modalHandler}
-          onModalClick={(data) => handleFormData(data)}
+          closeModal={handleModalVisibility}
+          onModalSubmit={(data) => {
+            createMovie(data);
+            handleModalVisibility();
+          }}
           editableMode={false}
+          genresOptions={genresOptions}
         />
       </Modal>
     </header>
   );
 };
+
+const mapDispatchToProps = (dispatch) => ({
+  createMovie: (data: Movie) => dispatch(createMovie(data)),
+});
 
 const Header = styled(HeaderComponent)`
   display: flex;
@@ -88,4 +104,4 @@ const Header = styled(HeaderComponent)`
   background-size: cover;
 `;
 
-export default Header;
+export default connect(null, mapDispatchToProps)(Header);

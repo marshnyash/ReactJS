@@ -12,18 +12,33 @@ const AppWrapper = styled.div`
   margin: 0 auto;
 `;
 
+export const GENRES_OPTIONS = [
+  "Documentary",
+  "Animation",
+  "Adventure",
+  "Family",
+  "Comedy",
+  "Science Fiction",
+  "Drama",
+  "Romance",
+];
+
 const App = () => {
   const [movieId, setMovieId] = useState(null);
 
-  const handleMovieCardClick = (movieIdDetails: string) => setMovieId(movieIdDetails);
-  
+  const handleMovieCardClick = (movieIdDetails: string) =>
+    setMovieId(movieIdDetails);
+
   return (
     <>
       <GlobalBodyStyle />
       <AppWrapper>
         <ErrorBoundary>
-          <Header movieDetailsId={movieId}/>
-          <MoviesContainer onMovieCardClick={handleMovieCardClick}/>
+          <Header movieDetailsId={movieId} genresOptions={GENRES_OPTIONS} />
+          <MoviesContainer
+            onMovieCardClick={handleMovieCardClick}
+            genresOptions={GENRES_OPTIONS}
+          />
         </ErrorBoundary>
         <Footer />
       </AppWrapper>

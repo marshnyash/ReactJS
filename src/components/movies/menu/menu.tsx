@@ -14,9 +14,15 @@ interface Props {
   menuOptions: string[];
   className: string;
   onMenuClick?: (e: any) => void;
+  id: string;
 }
 
-const MenuListComponent = ({ menuOptions, className, onMenuClick }: Props) => {
+const MenuListComponent = ({
+  menuOptions,
+  className,
+  onMenuClick,
+  id,
+}: Props) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -35,7 +41,10 @@ const MenuListComponent = ({ menuOptions, className, onMenuClick }: Props) => {
         aria-label="more"
         aria-controls="long-menu"
         aria-haspopup="true"
-        onClick={handleClick}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleClick(e);
+        }}
       >
         <MoreVertIcon className={classes.moreVertIcon} />
       </IconButton>
@@ -59,9 +68,10 @@ const MenuListComponent = ({ menuOptions, className, onMenuClick }: Props) => {
           <MenuItem
             key={option}
             className={classes.menuItem}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               handleClose();
-              onMenuClick({ option });
+              onMenuClick({ option, id });
             }}
           >
             {option}
@@ -79,7 +89,6 @@ const MenuList = styled(MenuListComponent)`
   background: #232323;
   border-radius: 50%;
   display: none;
-  
 `;
 
 export default MenuList;
