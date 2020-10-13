@@ -1,13 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { MoviesWrapper } from './movies-wrapper';
 
-import { deleteMovieById, editMovie, fetchMovies, updateFilters, updateSorting } from '../../redux/actions/movie';
-import Modal from '../modal/modal';
-import ModalAddEditContent from '../modal/modal-add-edit-content';
-import ModalDeleteContent from '../modal/modal-delete-content';
+import { fetchMovies, updateFilters, updateSorting } from '../../redux/actions/movie';
 import Filter from './filter/filter';
 import MovieCard from './movie-card/movie-card';
 import { MoviesResults } from './movies-results';
@@ -55,11 +52,6 @@ export enum Sorting {
   genres = "genres",
 }
 
-export enum MenuOptions {
-  Edit = "Edit",
-  Delete = "Delete",
-}
-
 const filters = [
   Filters.All,
   Filters.Documentary,
@@ -68,7 +60,6 @@ const filters = [
   Filters.Horror,
 ];
 const sort = [Sorting.release_date, Sorting.genres, Sorting.title];
-const menuOptions = [MenuOptions.Delete, MenuOptions.Edit];
 
 const MoviesContainerComponent = ({
   className,
@@ -77,33 +68,12 @@ const MoviesContainerComponent = ({
   movies,
   updateFilters,
   updateSorting,
-  deleteMovieById,
-  editMovie,
   genresOptions,
   sorting,
 }: Props) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isDeleteMovie, setIsDeleteMovie] = useState(false);
-  const [clickedCardId, setClickedCardId] = useState(null);
-  const [editedMovieData, setEditingMovieData] = useState(null);
-
   useEffect(() => {
     fetchMovies();
   }, []);
-
-  const handleModalVisibility = (e?: Event) => {
-    e?.preventDefault();
-    setIsModalVisible(!isModalVisible);
-  };
-
-  const handleMenuClick = ({ option, id }: any) => {
-    option === MenuOptions.Edit
-      ? setIsDeleteMovie(option === MenuOptions.Delete)
-      : setIsDeleteMovie(option === MenuOptions.Delete);
-    setClickedCardId(id);
-    setEditingMovieData(movies.find((el) => el.id === id));
-    handleModalVisibility();
-  };
 
   const handleFilterMovies = useCallback((filter) => {
     updateFilters(filter);
@@ -132,39 +102,12 @@ const MoviesContainerComponent = ({
               genres={genres}
               release_date={release_date}
               id={id}
-              menuOptions={menuOptions}
-              onMenuClick={handleMenuClick}
+              genresOptions={genresOptions}
               onMovieCardClick={onMovieCardClick}
             />
           ))}
         </MoviesWrapper>
       </section>
-
-      <Modal
-        showModal={isModalVisible}
-        closeModal={handleModalVisibility}
-        title={isDeleteMovie ? "DELETE MOVIE" : "EDIT MOVIE"}
-      >
-        {isDeleteMovie ? (
-          <ModalDeleteContent
-            onDeleteMovieHandler={() => {
-              deleteMovieById(clickedCardId);
-              handleModalVisibility();
-            }}
-          />
-        ) : (
-          <ModalAddEditContent
-            genresOptions={genresOptions}
-            closeModal={handleModalVisibility}
-            onModalSubmit={(data) => {
-              handleModalVisibility();
-              editMovie(data);
-            }}
-            formData={editedMovieData}
-            editableMode
-          />
-        )}
-      </Modal>
     </>
   );
 };
@@ -178,8 +121,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchMovies: () => dispatch(fetchMovies()),
-  editMovie: (data: Movie) => dispatch(editMovie(data)),
-  deleteMovieById: (id: string) => dispatch(deleteMovieById(id)),
   updateFilters: (filter: string) => dispatch(updateFilters(filter)),
   updateSorting: (sorting: string) => dispatch(updateSorting(sorting)),
 });
