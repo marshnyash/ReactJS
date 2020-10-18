@@ -122,7 +122,7 @@ const ModalAddEditContent = ({
               color: "white",
             }}
           >
-            {genresOptions.map((name) => (
+            {genresOptions?.map((name) => (
               <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>

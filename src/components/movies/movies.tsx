@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { RouteProps } from 'react-router';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { MoviesWrapper } from './movies-wrapper';
@@ -9,6 +11,7 @@ import Filter from './filter/filter';
 import MovieCard from './movie-card/movie-card';
 import { MoviesResults } from './movies-results';
 import { MoviesResultsNumber } from './movies-results-number';
+import NoMovieFound from './no-movie-found/no-movie-found';
 
 export interface Movie {
   budget: number;
@@ -25,11 +28,11 @@ export interface Movie {
   vote_count: number;
 }
 
-interface Props {
+interface Props extends RouteProps {
   className: string;
   fetchMovies: any;
   movies: Movie[];
-  onMovieCardClick?: (e: any) => void;
+
   editMovie?: (e: any) => void;
   updateFilters: any;
   updateSorting: any;
@@ -63,7 +66,6 @@ const sort = [Sorting.release_date, Sorting.genres, Sorting.title];
 
 const MoviesContainerComponent = ({
   className,
-  onMovieCardClick,
   fetchMovies,
   movies,
   updateFilters,
@@ -71,13 +73,11 @@ const MoviesContainerComponent = ({
   genresOptions,
   sorting,
 }: Props) => {
-  useEffect(() => {
-    fetchMovies();
-  }, []);
+  let match = useParams();
 
-  const handleFilterMovies = useCallback((filter) => {
-    updateFilters(filter);
-  }, []);
+  useEffect(() => fetchMovies(match?.searchQuery), []);
+
+  const handleFilterMovies = useCallback((filter) => updateFilters(filter), []);
 
   return (
     <>
@@ -94,18 +94,21 @@ const MoviesContainerComponent = ({
           &nbsp;movies found
         </MoviesResults>
         <MoviesWrapper>
-          {movies?.map(({ title, id, poster_path, genres, release_date }) => (
-            <MovieCard
-              title={title}
-              key={id}
-              image={poster_path}
-              genres={genres}
-              release_date={release_date}
-              id={id}
-              genresOptions={genresOptions}
-              onMovieCardClick={onMovieCardClick}
-            />
-          ))}
+          {movies?.length ? (
+            movies.map(({ title, id, poster_path, genres, release_date }) => (
+              <MovieCard
+                title={title}
+                key={id}
+                image={poster_path}
+                genres={genres}
+                release_date={release_date}
+                id={id}
+                genresOptions={genresOptions}
+              />
+            ))
+          ) : (
+            <NoMovieFound />
+          )}
         </MoviesWrapper>
       </section>
     </>
@@ -120,7 +123,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchMovies: () => dispatch(fetchMovies()),
+  fetchMovies: (data: string) => dispatch(fetchMovies(data)),
   updateFilters: (filter: string) => dispatch(updateFilters(filter)),
   updateSorting: (sorting: string) => dispatch(updateSorting(sorting)),
 });
@@ -128,5 +131,6 @@ const mapDispatchToProps = (dispatch) => ({
 const MoviesContainer = styled(MoviesContainerComponent)`
   padding: 10px 40px 40px;
   background: #232323;
+  min-height: calc(100vh - 570px);
 `;
 export default connect(mapStateToProps, mapDispatchToProps)(MoviesContainer);
