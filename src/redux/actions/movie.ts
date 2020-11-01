@@ -26,7 +26,7 @@ import {
   UPDATE_SORTING_SUCCESS,
 } from './actionTypes';
 
-export const fetchMovies = (search: string) => (dispatch, getState) => {
+export const fetchMovies = (search = "") => (dispatch, getState) => {
   const searchParams = search ? `search=${search}&searchBy=title` : null;
   const sortParams = `sortOrder=desc&sortBy=${getState()?.movies?.sorting}`;
   const filterParams =

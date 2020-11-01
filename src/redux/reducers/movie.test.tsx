@@ -58,11 +58,7 @@ describe("movies reducer", () => {
         type: types.FETCH_MOVIES_START,
       })
     ).toEqual({
-      error: null,
-      currentMovie: null,
-      filter: Filters.All,
-      sorting: Sorting.release_date,
-      search: null,
+      ...initialState,
       loading: true,
       movies: [],
     });
@@ -75,12 +71,7 @@ describe("movies reducer", () => {
         movies,
       })
     ).toEqual({
-      error: null,
-      currentMovie: null,
-      filter: Filters.All,
-      sorting: Sorting.release_date,
-      search: null,
-      loading: false,
+      ...initialState,
       movies,
     });
   });
@@ -92,13 +83,8 @@ describe("movies reducer", () => {
         error: "some error",
       })
     ).toEqual({
+      ...initialState,
       error: "some error",
-      currentMovie: null,
-      filter: Filters.All,
-      sorting: Sorting.release_date,
-      search: null,
-      loading: false,
-      movies: [],
     });
   });
 });
