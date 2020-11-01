@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { deleteMovieById, editMovie } from '../../../redux/actions/movie';
@@ -22,7 +23,6 @@ export enum MenuOptions {
 const menuOptions = [MenuOptions.Delete, MenuOptions.Edit];
 
 interface Props extends Movie {
-  onMovieCardClick?: (e: any) => void;
   className: string;
   image: string;
   title: string;
@@ -36,7 +36,6 @@ interface Props extends Movie {
 
 const MovieCardComponent = ({
   className,
-  onMovieCardClick,
   image,
   title,
   genres,
@@ -47,6 +46,7 @@ const MovieCardComponent = ({
   editMovie,
   movies,
 }: Props) => {
+  let history = useHistory();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isDeleteMovie, setIsDeleteMovie] = useState(false);
   const [clickedCardId, setClickedCardId] = useState(null);
@@ -67,12 +67,7 @@ const MovieCardComponent = ({
   };
 
   return (
-    <section
-      className={className}
-      onClick={() => {
-        onMovieCardClick({ id });
-      }}
-    >
+    <section className={className} onClick={() => history.push(`/movie/${id}`)}>
       <MovieImageSection>
         <MovieImage src={image} alt="movie" />
         <MenuList

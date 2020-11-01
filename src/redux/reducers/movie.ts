@@ -15,6 +15,9 @@ import {
   FETCH_MOVIES_ERROR,
   FETCH_MOVIES_START,
   FETCH_MOVIES_SUCCESS,
+  SEARCH_MOVIE_ERROR,
+  SEARCH_MOVIE_START,
+  SEARCH_MOVIE_SUCCESS,
   UPDATE_FILTER_ERROR,
   UPDATE_FILTER_START,
   UPDATE_FILTER_SUCCESS,
@@ -30,6 +33,7 @@ const initialState = {
   currentMovie: null,
   filter: Filters.All,
   sorting: Sorting.release_date,
+  search: null,
 };
 
 export default function moviesReducer(state = initialState, action) {
@@ -153,6 +157,24 @@ export default function moviesReducer(state = initialState, action) {
         loading: true,
       };
     case UPDATE_SORTING_ERROR:
+      return {
+        ...state,
+        loading: false,
+        error: action.error,
+      };
+
+    case SEARCH_MOVIE_SUCCESS:
+      return {
+        ...state,
+        movies: action.movies,
+        search: action.search,
+      };
+    case SEARCH_MOVIE_START:
+      return {
+        ...state,
+        loading: true,
+      };
+    case SEARCH_MOVIE_ERROR:
       return {
         ...state,
         loading: false,

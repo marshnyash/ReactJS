@@ -15,7 +15,7 @@ import { MovieDetailsTitleBlock } from './movie-details-title-block';
 
 interface Props {
   className: string;
-  id?: { id: string };
+  id?: string;
   currentMovie: Movie;
   fetchMovieById: any;
 }
@@ -27,7 +27,7 @@ const MovieDetailsComponent = ({
   fetchMovieById,
 }: Props) => {
   useEffect(() => {
-    fetchMovieById(id.id);
+    fetchMovieById(id);
   }, [id]);
   return (
     currentMovie && (
