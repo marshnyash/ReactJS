@@ -28,7 +28,7 @@ const customStyle = {
     minWidth: "350px",
   },
 };
-ReactModal.setAppElement("#root");
+// ReactModal.setAppElement("#root");
 
 const ModalComponent = ({
   title,
